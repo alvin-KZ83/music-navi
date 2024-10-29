@@ -1,0 +1,98 @@
+/* General reset for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%; /* Ensure the body takes the full height */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f9;
+}
+
+/* Main container with horizontal split */
+.gridHorizontalSplit {
+    background-color: #29252c;
+    height: 100%; /* Fill the entire height */
+    width: 100%;  /* Fill the entire width */
+    display: grid;
+    grid-template-rows: 50% 50%;
+    grid-gap: 0px;
+    padding: 0px;
+    overflow: hidden;
+    text-align: center;
+    color: #ffffff;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    margin-bottom: 10px;
+    color: #f0f0f0;
+}
+
+p {
+    margin: 10px 0;
+    color: #d0d0d0;
+}
+
+#joystickCanvas {
+    border: 2px solid #2798da;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin: 20px 0;
+}
+
+button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .gridHorizontalSplit {
+        grid-template-rows: auto auto;
+    }
+
+    #joystickCanvas {
+        max-width: 150px;
+    }
+
+    button {
+        width: 80%;
+        padding: 12px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    p, #positionDisplay {
+        font-size: 0.9rem;
+    }
+}
