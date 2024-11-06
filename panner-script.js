@@ -8,6 +8,56 @@ let startTime = 0;
 let pausedAt = 0;
 let posX = 0, posY = 0, posZ = 0;
 
+let currentHeading = null;
+
+document.getElementById('sensor-permission').addEventListener('click', function () {
+  // Check if permission is needed (e.g., on iOS) and request it
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          console.log('Motion sensor permission granted.');
+          window.addEventListener('deviceorientation', updateHeading, true);
+        } else {
+          alert('Permission to access motion sensors was denied.');
+        }
+      })
+      .catch(console.error);
+  } else {
+    // For devices that do not require permission
+    window.addEventListener('deviceorientation', updateHeading, true);
+  }
+});
+
+function updateHeading(event) {
+  // Use the alpha value to get the current heading (z-axis rotation)
+  currentHeading = event.alpha;
+  document.getElementById("heading").innerText = `${Math.round(currentHeading)}`;
+
+  // Display direction status based on the heading (e.g., facing north if near 0°)
+  checkDirection();
+}
+
+function checkDirection() {
+  const tolerance = 10; // Degrees of tolerance for detecting direction
+  const north = 0;      // Define 0° as North
+
+  // Calculate the difference between the current heading and north
+  let headingDifference = Math.abs(currentHeading - north);
+
+  // Adjust for 360-degree wrap-around
+  if (headingDifference > 180) {
+    headingDifference = 360 - headingDifference;
+  }
+
+  // Update the status message if facing "north"
+  if (headingDifference <= tolerance) {
+    document.getElementById("direction-status").innerText = `Good! Facing North.`;
+  } else {
+    document.getElementById("direction-status").innerText = `Adjust to face North.`;
+  }
+}
+
 function loadSound() {
   fetch("scyho.mp3") // Replace with your local file path
     .then((response) => response.arrayBuffer())
