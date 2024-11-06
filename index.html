@@ -10,20 +10,18 @@
 </head>
 
 <body>
-    <div class="gridHorizontalSplit" style="grid-template-rows: 40% 60%;">
+    <div class="gridHorizontalSplit" style="grid-template-rows: 30% 40% 30%;">
+        <div class="section">
+            <button id="sensor-permission">Start Tracking</button>
+            <button onclick="playSound()">Play Sound</button>
+        </div>
         <div class="section">
             <canvas id="joystickCanvas" width="200" height="200"></canvas>
         </div>
-        <div class="gridHorizontalSplit" style="grid-template-rows: 50% 50%;">
-            <div class="section">
-                <button id="sensor-permission">Start Tracking</button>
-                <button onclick="playSound()">Play Sound</button>
-            </div>
-            <div class="section">
-                <p>Current Heading: <span id="heading">0</span>°</p>
-                <p>Direction Status: <span id="direction-status">N/A</span></p>
-                <p id="positionDisplay">Position - X: 0, Y: 0, Z: 0</p>
-            </div>
+        <div class="section">
+            <p>Current Heading: <span id="heading">0</span>°</p>
+            <p>Direction Status: <span id="direction-status">N/A</span></p>
+            <p id="positionDisplay">Position - X: 0, Y: 0, Z: 0</p>
         </div>
     </div>
 

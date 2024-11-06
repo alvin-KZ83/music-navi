@@ -5,8 +5,10 @@
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100%; /* Ensure the body takes the full height */
+html,
+body {
+    height: 100%;
+    /* Ensure the body takes the full height */
 }
 
 body {
@@ -20,8 +22,10 @@ body {
 /* Main container with horizontal split */
 .gridHorizontalSplit {
     background-color: #29252c;
-    height: 100%; /* Fill the entire height */
-    width: 100%;  /* Fill the entire width */
+    height: 100%;
+    /* Fill the entire height */
+    width: 100%;
+    /* Fill the entire width */
     display: grid;
     grid-template-rows: 50% 50%;
     grid-gap: 0px;
@@ -49,6 +53,9 @@ p {
 }
 
 #joystickCanvas {
+    touch-action: none;
+    /* Prevents the browser from interfering with touch */
+    position: relative;
     border: 2px solid #2798da;
     border-radius: 50%;
     cursor: pointer;
@@ -92,7 +99,8 @@ button:hover {
         font-size: 1.5rem;
     }
 
-    p, #positionDisplay {
+    p,
+    #positionDisplay {
         font-size: 0.9rem;
     }
 }
