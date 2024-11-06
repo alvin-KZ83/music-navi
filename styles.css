@@ -5,10 +5,8 @@
     box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
     height: 100%;
-    /* Ensure the body takes the full height */
 }
 
 body {
@@ -17,24 +15,22 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #f4f4f9;
+    overflow-x: hidden;
 }
 
 /* Main container with horizontal split */
 .gridHorizontalSplit {
     background-color: #29252c;
     height: 100%;
-    /* Fill the entire height */
     width: 100%;
-    /* Fill the entire width */
     display: grid;
-    grid-template-rows: 50% 50%;
-    grid-gap: 0px;
+    grid-template-rows: 30% 40% 30%;
     padding: 0px;
-    overflow: hidden;
     text-align: center;
     color: #ffffff;
 }
 
+/* Section styling */
 .section {
     display: flex;
     flex-direction: column;
@@ -42,65 +38,60 @@ body {
     justify-content: center;
 }
 
-h2 {
-    margin-bottom: 10px;
-    color: #f0f0f0;
-}
-
-p {
-    margin: 10px 0;
+p, #positionDisplay {
+    margin: 8px 0;
     color: #d0d0d0;
+    font-size: 1rem;
 }
 
+/* Joystick Canvas */
 #joystickCanvas {
     touch-action: none;
-    /* Prevents the browser from interfering with touch */
-    position: relative;
     border: 2px solid #2798da;
     border-radius: 50%;
     cursor: pointer;
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    margin: 20px 0;
+    width: 80%;
+    max-width: 250px;
+    margin: 15px 0;
 }
 
+/* Button styling */
 button {
     background-color: #007bff;
     color: #ffffff;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;
+    margin-top: 8px;
+    font-size: 1.1rem;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
-/* Responsive styles */
+/* Responsive styles for smaller screens */
 @media (max-width: 600px) {
     .gridHorizontalSplit {
-        grid-template-rows: auto auto;
+        grid-template-rows: auto auto auto;
+        padding: 10px;
+    }
+
+    /* Increase button size and touch area */
+    button {
+        width: 85%;
+        padding: 14px;
+        font-size: 1.2rem;
     }
 
     #joystickCanvas {
-        max-width: 150px;
+        width: 90%;
+        max-width: 200px;
     }
 
-    button {
-        width: 80%;
-        padding: 12px;
-    }
-
-    h2 {
-        font-size: 1.5rem;
-    }
-
-    p,
-    #positionDisplay {
+    p, #positionDisplay {
         font-size: 0.9rem;
     }
 }
