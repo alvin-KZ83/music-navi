@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +8,27 @@
     <!-- Link to the external stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="gridHorizontalSplit" style="grid-template-rows: 30% 40% 30%">
-        <div class="section">
-            <h2>3D Audio Joystick Control</h2>
-            <p>Use the joystick to change X and Z positions, and scroll to change Y (height).</p>
-        </div>
+    <div class="gridHorizontalSplit" style="grid-template-rows: 40% 60%;">
         <div class="section">
             <canvas id="joystickCanvas" width="200" height="200"></canvas>
         </div>
-        <div class="section">
-            <button id="sensor-permission">Start Tracking</button>
-            <button onclick="playSound()">Play Sound</button>
-            <p>Current Heading: <span id="heading">0</span>°</p>
-            <p>Direction Status: <span id="direction-status">N/A</span></p>
-            <p id="positionDisplay">Position - X: 0, Y: 0, Z: 0</p>
+        <div class="gridHorizontalSplit" style="grid-template-rows: 50% 50%;">
+            <div class="section">
+                <button id="sensor-permission">Start Tracking</button>
+                <button onclick="playSound()">Play Sound</button>
+            </div>
+            <div class="section">
+                <p>Current Heading: <span id="heading">0</span>°</p>
+                <p>Direction Status: <span id="direction-status">N/A</span></p>
+                <p id="positionDisplay">Position - X: 0, Y: 0, Z: 0</p>
+            </div>
         </div>
     </div>
 
     <!-- Link to the external JavaScript file -->
     <script src="panner-script.js"></script>
 </body>
+
 </html>

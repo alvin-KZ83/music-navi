@@ -104,9 +104,53 @@ function drawJoystick() {
 
   // Draw the joystick sphere
   ctx.beginPath();
-  ctx.arc(joystickX, joystickY, 10, 0, Math.PI * 2);
+  ctx.arc(joystickX, joystickY, 20, 0, Math.PI * 2);
   ctx.fillStyle = isDragging ? "red" : "#333";
   ctx.fill();
+}
+
+function calculateLeftDistance(curr, target, fieldOfView) {
+  // Adjust current heading with field of view
+  let adjustedAngle = curr + fieldOfView;
+  adjustedAngle = (adjustedAngle > 360) ? adjustedAngle - 360 : adjustedAngle;
+
+  // Calculate angle difference
+  let angleDifference = Math.abs(target - adjustedAngle);
+  angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+
+  // Convert to radians and calculate distance
+  const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
+  return 2 * Math.sin(radianAngle);
+}
+
+function calculateRightDistance(curr, target, fieldOfView) {
+  // Adjust current heading with field of view
+  let adjustedAngle = curr - fieldOfView;
+  adjustedAngle = (adjustedAngle < 0) ? adjustedAngle + 360 : adjustedAngle;
+
+  // Calculate angle difference
+  let angleDifference = Math.abs(target - adjustedAngle);
+  angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+
+  // Convert to radians and calculate distance
+  const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
+  return 2 * Math.sin(radianAngle);
+}
+
+
+// Calculate heading based on joystick position
+function calculateHeading() {
+  // Calculate the angle in radians, with respect to negative z-axis (0 degrees at x=0, z=-1)
+  const x = (joystickX - joystickCanvas.width / 2) / radius;
+  const z = (joystickY - joystickCanvas.height / 2) / radius;
+  
+  // atan2 gives angle in radians from -π to π, so convert to degrees
+  let angle = Math.atan2(-x, -z) * (180 / Math.PI);  // negative x for counterclockwise rotation
+  
+  // Ensure angle is between 0 and 360 degrees
+  if (angle < 0) angle += 360;
+
+  return angle.toFixed(2);  // Return heading as a fixed decimal string
 }
 
 function updatePannerPosition() {
@@ -116,11 +160,20 @@ function updatePannerPosition() {
   panner.positionY.setValueAtTime(posY, audioContext.currentTime);
   panner.positionZ.setValueAtTime(z, audioContext.currentTime);
 
+  const heading = calculateHeading();
+
+  const left = calculateLeftDistance(currentHeading, heading, 15);
+  const right = calculateRightDistance(currentHeading, heading, 15);
+
+  // Normalize left and right between 0 and 1
+  const leftVolume = (2 - left) / 2;
+  const rightVolume = (2 - right) / 2;
+
   document.getElementById(
     "positionDisplay"
   ).innerText = `Position - X: ${x.toFixed(2)}, Y: ${posY.toFixed(
     2
-  )}, Z: ${z.toFixed(2)}`;
+  )}, Z: ${z.toFixed(2)}, Heading: ${heading}°, Left Volume: ${leftVolume.toFixed(2)}, Right Volume: ${rightVolume.toFixed(2)}`;
 }
 
 // Mouse interaction for joystick
@@ -132,8 +185,8 @@ joystickCanvas.addEventListener("mousedown", (e) => {
 document.addEventListener("mouseup", () => {
   isDragging = false;
   // Reset joystick position when dragging stops
-  joystickX = joystickCanvas.width / 2;
-  joystickY = joystickCanvas.height / 2;
+  // joystickX = joystickCanvas.width / 2;
+  // joystickY = joystickCanvas.height / 2;
   drawJoystick(isDragging); // Draw with updated position and color
   updatePannerPosition(); // Update panner position to reflect reset
 });
@@ -158,6 +211,33 @@ document.addEventListener("mousemove", (e) => {
     updatePannerPosition();
   }
 });
+
+joystickCanvas.addEventListener("touchstart", (e) => {
+  isDragging = true;
+  handleTouchMove(e);
+});
+joystickCanvas.addEventListener("touchmove", handleTouchMove);
+joystickCanvas.addEventListener("touchend", () => {
+  isDragging = false;
+});
+
+function handleTouchMove(e) {
+  const touch = e.touches[0];  // Use the first touch
+  const rect = joystickCanvas.getBoundingClientRect();
+  const offsetX = touch.clientX - rect.left - joystickCanvas.width / 2;
+  const offsetY = touch.clientY - rect.top - joystickCanvas.height / 2;
+  const distance = Math.sqrt(offsetX ** 2 + offsetY ** 2);
+  if (distance < radius) {
+    joystickX = touch.clientX - rect.left;
+    joystickY = touch.clientY - rect.top;
+  } else {
+    joystickX = rect.width / 2 + offsetX * (radius / distance);
+    joystickY = rect.height / 2 + offsetY * (radius / distance);
+  }
+  drawJoystick();
+  updatePannerPosition();
+}
+
 
 // Scroll wheel to adjust Y position
 document.addEventListener("wheel", (e) => {
