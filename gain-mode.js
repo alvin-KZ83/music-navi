@@ -186,8 +186,8 @@ function updateVolume() {
   // const rightVolume = (2 - right) / 2;
 
   // Alternative: Ensure it stays between 0 and 1 and square it
-  const leftVolume = Math.pow(Math.min(1, Math.max(0, 2 - left)),2);  
-  const rightVolume = Math.pow(Math.min(1, Math.max(0, 2 - right)),2);
+  const leftVolume = Math.pow(Math.min(1, Math.max(0, 2 - left)),3);  
+  const rightVolume = Math.pow(Math.min(1, Math.max(0, 2 - right)),3);
   
   // Sigmoid function
   const sigmoid = x => 1 / (1 + Math.exp(-10 * (x - 0.5)));
