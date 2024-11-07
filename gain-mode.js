@@ -115,6 +115,35 @@ function drawJoystick() {
   ctx.fill();
 }
 
+function calculateLeftDistance(curr, target, fieldOfView) {
+  // Adjust current heading with field of view
+  let adjustedAngle = curr + fieldOfView;
+  adjustedAngle = (adjustedAngle > 360) ? adjustedAngle - 360 : adjustedAngle;
+
+  // Calculate angle difference
+  let angleDifference = Math.abs(target - adjustedAngle);
+  angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+
+  // Convert to radians and calculate distance
+  const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
+  return 2 * Math.sin(radianAngle);
+}
+
+function calculateRightDistance(curr, target, fieldOfView) {
+  // Adjust current heading with field of view
+  let adjustedAngle = curr - fieldOfView;
+  adjustedAngle = (adjustedAngle < 0) ? adjustedAngle + 360 : adjustedAngle;
+
+  // Calculate angle difference
+  let angleDifference = Math.abs(target - adjustedAngle);
+  angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+
+  // Convert to radians and calculate distance
+  const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
+  return 2 * Math.sin(radianAngle);
+}
+
+
 // Calculate heading based on joystick position
 function calculateHeading() {
   // Calculate the angle in radians, with respect to negative z-axis (0 degrees at x=0, z=-1)
@@ -132,11 +161,16 @@ function calculateHeading() {
 
 function updateVolume() {
   // Calculate the angle based on joystick position
+  const x = (joystickX - joystickCanvas.width / 2) / radius;
+  const z = (joystickY - joystickCanvas.height / 2) / radius;
   const heading = calculateHeading();
 
-  // Map joystick position to left/right volume adjustment
-  const leftVolume = Math.max(0, Math.min(1, (360 - heading) / 360));  // Volume for left
-  const rightVolume = Math.max(0, Math.min(1, heading / 360));         // Volume for right
+  const left = calculateLeftDistance(currentHeading, heading, 15);
+  const right = calculateRightDistance(currentHeading, heading, 15);
+
+  // Normalize left and right between 0 and 1
+  const leftVolume = (2 - left) / 2;
+  const rightVolume = (2 - right) / 2;
 
   // Update left and right gain nodes
   leftGain.gain.setValueAtTime(leftVolume, audioContext.currentTime);
