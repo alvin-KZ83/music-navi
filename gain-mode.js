@@ -1,6 +1,7 @@
 // JavaScript
 const fieldOfViewInput = document.getElementById('fieldOfViewInput');
-let fieldOfView = 45; // Default value
+let fieldOfView = 20; // Default value
+let tolerance = fieldOfView / 2;
 
 fieldOfViewInput.addEventListener('input', function() {
   fieldOfView = parseInt(fieldOfViewInput.value);
@@ -52,7 +53,7 @@ function updateHeading(event) {
 }
 
 function checkDirection() {
-  const tolerance = 10; // Degrees of tolerance for detecting direction
+  // const tolerance = fieldOfView / 2; // Degrees of tolerance for detecting direction
   const north = 0;      // Define 0° as North
 
   // Calculate the difference between the current heading and north
@@ -133,6 +134,7 @@ function calculateLeftDistance(curr, target, fieldOfView) {
   // Calculate angle difference
   let angleDifference = Math.abs(target - adjustedAngle);
   angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+  angleDifference = (angleDifference < tolerance) ? 0 : angleDifference;
 
   // Convert to radians and calculate distance
   const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
@@ -147,6 +149,7 @@ function calculateRightDistance(curr, target, fieldOfView) {
   // Calculate angle difference
   let angleDifference = Math.abs(target - adjustedAngle);
   angleDifference = (angleDifference > 180) ? 360 - angleDifference : angleDifference;
+  angleDifference = (angleDifference < tolerance) ? 0 : angleDifference;
 
   // Convert to radians and calculate distance
   const radianAngle = angleDifference * 0.5 * (Math.PI / 180); // Half-angle in radians
