@@ -3,17 +3,25 @@ const fieldOfViewInput = document.getElementById('fieldOfViewInput');
 let fieldOfView = 20; // Default value
 let tolerance = fieldOfView / 2;
 
+const exponentInput = document.getElementById('exponentInput');
+let exp = 5;
+
 fieldOfViewInput.addEventListener('input', function() {
   fieldOfView = parseInt(fieldOfViewInput.value);
   console.log(`Field of View updated: ${fieldOfView}°`);
 });
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const panner = audioContext.createPanner();
+panner.panningModel = "HRTF";
+
 let source;
 let isPlaying = false;
 let posX = 0, posY = 0, posZ = 0;
 
 let currentHeading = null;
+
+
 
 // Create two GainNodes for left and right volume control
 const leftGain = audioContext.createGain();
@@ -80,7 +88,7 @@ function loadSound() {
       source = audioContext.createBufferSource();
       source.buffer = buffer;
       source.loop = true;
-
+      source.connect(panner).connect(audioContext.destination);
       // Connect source to left and right gain nodes
       source.connect(leftGain);
       source.connect(rightGain);
@@ -186,15 +194,19 @@ function updateVolume() {
   // const rightVolume = (2 - right) / 2;
 
   // Alternative: Ensure it stays between 0 and 1 and square it
-  const leftVolume = Math.pow(Math.min(1, Math.max(0, 2 - left)),3);  
-  const rightVolume = Math.pow(Math.min(1, Math.max(0, 2 - right)),3);
+  const leftVolume = Math.pow(Math.min(1, Math.max(0, 2 - left)), exp);  
+  const rightVolume = Math.pow(Math.min(1, Math.max(0, 2 - right)), exp);
   
   // Sigmoid function
   const sigmoid = x => 1 / (1 + Math.exp(-10 * (x - 0.5)));
   // const leftVolume = sigmoid(Math.min(1, Math.max(0, 2 - left)));
   // const rightVolume = sigmoid(Math.min(1, Math.max(0, 2 - right)));
 
-
+  // Update panner instead
+  const xpos = rightVolume - leftVolume;
+  // panner.positionX.setValueAtTime(xpos, audioContext.currentTime);
+  // panner.positionY.setValueAtTime(0, audioContext.currentTime); //same level
+  // panner.positionZ.setValueAtTime(-1, audioContext.currentTime); //forward
 
   // Update left and right gain nodes
   leftGain.gain.setValueAtTime(leftVolume, audioContext.currentTime);
