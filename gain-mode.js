@@ -4,9 +4,6 @@ let isPlaying = false;
 let posX = 0, posY = 0, posZ = 0;
 
 let currentHeading = null;
-let heading = null;
-let leftVolume = null;
-let rightVolume = null;
 
 // Create two GainNodes for left and right volume control
 const leftGain = audioContext.createGain();
@@ -37,7 +34,6 @@ document.getElementById('sensor-permission').addEventListener('click', function 
 
 function updateHeading(event) {
   // Use the alpha value to get the current heading (z-axis rotation)
-  heading = calculateHeading();
   currentHeading = event.alpha;
   document.getElementById("heading").innerText = `${Math.round(currentHeading)}`;
 
@@ -168,17 +164,20 @@ function updateVolume() {
   // Calculate the angle based on joystick position
   const x = (joystickX - joystickCanvas.width / 2) / radius;
   const z = (joystickY - joystickCanvas.height / 2) / radius;
+  const heading = calculateHeading();
 
   const left = calculateLeftDistance(currentHeading, heading, 15);
   const right = calculateRightDistance(currentHeading, heading, 15);
 
   // Normalize left and right between 0 and 1
-  leftVolume = (2 - left) / 2;
-  rightVolume = (2 - right) / 2;
+  const leftVolume = (2 - left) / 2;
+  const rightVolume = (2 - right) / 2;
 
   // Update left and right gain nodes
   leftGain.gain.setValueAtTime(leftVolume, audioContext.currentTime);
   rightGain.gain.setValueAtTime(rightVolume, audioContext.currentTime);
+
+  document.getElementById("positionDisplay").innerText = `Heading: ${heading}°, Left Volume: ${leftVolume.toFixed(2)}, Right Volume: ${rightVolume.toFixed(2)}`;
 }
 
 // Mouse interaction for joystick
@@ -186,8 +185,6 @@ let isDragging = false;
 joystickCanvas.addEventListener("mousedown", (e) => {
   isDragging = true;
 });
-
-document.getElementById("positionDisplay").innerText = `Heading: ${heading}°, Left Volume: ${leftVolume.toFixed(2)}, Right Volume: ${rightVolume.toFixed(2)}`;
 
 document.addEventListener("mouseup", () => {
   isDragging = false;
@@ -215,6 +212,19 @@ document.addEventListener("mousemove", (e) => {
     updateVolume();
   }
 });
+
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === "ArrowUp") {
+    currentHeading += 5;  // Increase the heading by 5 degrees
+    if (currentHeading >= 360) {
+      currentHeading = 0;  // Wrap around to 0 when it exceeds 360
+    }
+    console.log("Current Heading:", currentHeading);
+    document.getElementById("heading").innerText = `${currentHeading}°`; // Update the displayed heading
+  }
+});
+
 
 joystickCanvas.addEventListener("touchstart", (e) => {
   isDragging = true;
