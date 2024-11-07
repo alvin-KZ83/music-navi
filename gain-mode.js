@@ -39,6 +39,7 @@ function updateHeading(event) {
 
   // Display direction status based on the heading (e.g., facing north if near 0°)
   checkDirection();
+  updateVolume();
 }
 
 function checkDirection() {
