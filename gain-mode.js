@@ -1,3 +1,12 @@
+// JavaScript
+const fieldOfViewInput = document.getElementById('fieldOfViewInput');
+let fieldOfView = 45; // Default value
+
+fieldOfViewInput.addEventListener('input', function() {
+  fieldOfView = parseInt(fieldOfViewInput.value);
+  console.log(`Field of View updated: ${fieldOfView}°`);
+});
+
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let source;
 let isPlaying = false;
@@ -166,12 +175,17 @@ function updateVolume() {
   const z = (joystickY - joystickCanvas.height / 2) / radius;
   const heading = calculateHeading();
 
-  const left = calculateLeftDistance(currentHeading, heading, 15);
-  const right = calculateRightDistance(currentHeading, heading, 15);
+  const left = calculateLeftDistance(currentHeading, heading, fieldOfView);
+  const right = calculateRightDistance(currentHeading, heading, fieldOfView);
 
   // Normalize left and right between 0 and 1
-  const leftVolume = (2 - left) / 2;
-  const rightVolume = (2 - right) / 2;
+  // const leftVolume = (2 - left) / 2;
+  // const rightVolume = (2 - right) / 2;
+
+  // Alternative: Ensure it stays between 0 and 1
+  const leftVolume = Math.min(1, Math.max(0, 2 - left));  
+  const rightVolume = Math.min(1, Math.max(0, 2 - right));
+
 
   // Update left and right gain nodes
   leftGain.gain.setValueAtTime(leftVolume, audioContext.currentTime);
