@@ -4,6 +4,9 @@ let isPlaying = false;
 let posX = 0, posY = 0, posZ = 0;
 
 let currentHeading = null;
+let heading = null;
+let leftVolume = null;
+let rightVolume = null;
 
 // Create two GainNodes for left and right volume control
 const leftGain = audioContext.createGain();
@@ -34,6 +37,7 @@ document.getElementById('sensor-permission').addEventListener('click', function 
 
 function updateHeading(event) {
   // Use the alpha value to get the current heading (z-axis rotation)
+  heading = calculateHeading();
   currentHeading = event.alpha;
   document.getElementById("heading").innerText = `${Math.round(currentHeading)}`;
 
@@ -164,20 +168,17 @@ function updateVolume() {
   // Calculate the angle based on joystick position
   const x = (joystickX - joystickCanvas.width / 2) / radius;
   const z = (joystickY - joystickCanvas.height / 2) / radius;
-  const heading = calculateHeading();
 
   const left = calculateLeftDistance(currentHeading, heading, 15);
   const right = calculateRightDistance(currentHeading, heading, 15);
 
   // Normalize left and right between 0 and 1
-  const leftVolume = (2 - left) / 2;
-  const rightVolume = (2 - right) / 2;
+  leftVolume = (2 - left) / 2;
+  rightVolume = (2 - right) / 2;
 
   // Update left and right gain nodes
   leftGain.gain.setValueAtTime(leftVolume, audioContext.currentTime);
   rightGain.gain.setValueAtTime(rightVolume, audioContext.currentTime);
-
-  document.getElementById("positionDisplay").innerText = `Heading: ${heading}°, Left Volume: ${leftVolume.toFixed(2)}, Right Volume: ${rightVolume.toFixed(2)}`;
 }
 
 // Mouse interaction for joystick
@@ -185,6 +186,8 @@ let isDragging = false;
 joystickCanvas.addEventListener("mousedown", (e) => {
   isDragging = true;
 });
+
+document.getElementById("positionDisplay").innerText = `Heading: ${heading}°, Left Volume: ${leftVolume.toFixed(2)}, Right Volume: ${rightVolume.toFixed(2)}`;
 
 document.addEventListener("mouseup", () => {
   isDragging = false;
