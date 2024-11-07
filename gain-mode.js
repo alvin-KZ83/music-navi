@@ -181,13 +181,17 @@ function updateVolume() {
   const left = calculateLeftDistance(currentHeading, heading, fieldOfView);
   const right = calculateRightDistance(currentHeading, heading, fieldOfView);
 
+  // Do nothing
+  const leftVolume = left;
+  const rightVolume = right;
+
   // Normalize left and right between 0 and 1
   // const leftVolume = (2 - left) / 2;
   // const rightVolume = (2 - right) / 2;
 
   // Alternative: Ensure it stays between 0 and 1
-  const leftVolume = Math.min(1, Math.max(0, 2 - left));  
-  const rightVolume = Math.min(1, Math.max(0, 2 - right));
+  // const leftVolume = Math.min(1, Math.max(0, 2 - left));  
+  // const rightVolume = Math.min(1, Math.max(0, 2 - right));
 
 
   // Update left and right gain nodes
